@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<CLBConfig output="output/" permissive="true">
+	<Geometry nx="32" ny="32" nz="32">
+		<Dirichlet name="bottom">
+			<Box nz="1"/>
+		</Dirichlet>
+		<None name="top">
+			<Box dz="-1"/>
+		</None>
+		<Dirichlet name="load">
+			<Box dx="10" nx="12" dy="10" ny="12" dz="-1"/>
+		</Dirichlet>
+		<None name="cuts">
+			<Box dx="5" nx="22" dy="5" ny="22" dz="5" nz="22"/>
+		</None>
+	</Geometry>
+	<Model>
+		<Param name="Density" value="1"/>
+		<Param name="Density" value="0" zone="top"/>
+		<Param name="Density" value="0" zone="load"/>
+		<Param name="Density" value="0" zone="cuts"/>
+		<Param name="YoungModulus" value="1"/>
+		<Param name="PoissonRatio" value="0.2"/>
+		<Param name="DisplacementZ" value="0" zone="bottom"/>
+		<Param name="Relaxation" value="-0.1"/>
+	</Model>
+	<VTK Iterations="25"/>
+	<VTK/>
+	<Param name="DisplacementZ" value="-0.2" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-0.4" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-0.6" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-0.8" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-1.0" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-1.2" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-1.4" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-1.6" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-1.8" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-2.0" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-2.2" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-2.4" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-2.6" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-2.8" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-3.0" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-3.2" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-3.4" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-3.6" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-3.8" zone="load"/>
+	<Solve Iterations="200"/>
+	<Param name="DisplacementZ" value="-4.0" zone="load"/>
+	<Solve Iterations="10000"/>
+</CLBConfig>
