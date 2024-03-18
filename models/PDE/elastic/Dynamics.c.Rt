@@ -1,0 +1,81 @@
+<?R
+  source("conf.R")
+  library(polyAlgebra)
+  E = function(f) gapply(f,function(f) integr(integr(integr(f,"x",0,1),"y",0,1),"z",0,1))
+  deriv.gvector = function(obj,...) gapply(obj, function(f) deriv(f,...))
+
+  mu = PV("mu")
+  lam = PV("lam")
+  relax = PV("Relaxation")
+
+  Displacement = PV("Displacement",c("X","Y","Z"))
+  point_u = PV("u",xyz)
+
+  x = PV("x")
+  y = PV("y")
+  z = PV("z")
+
+  phi = V(1-x,x)[dsel$x]*V(1-y,y)[dsel$y]*V(1-z,z)[dsel$z]
+  beta = PV(tab$beta)
+  dim(beta) = c(nrow(dsel),length(xyz))
+  dbeta = PV(tab$dbeta)
+  dim(dbeta) = c(nrow(dsel),length(xyz))
+
+  u = phi %*% beta
+
+  du = V(deriv(u,"x"),deriv(u,"y"),deriv(u,"z"))
+  dim(du) = c(length(u),3)
+
+  # eps = du + t(du)
+  eps = (diag(3) + du) %*% (diag(3) + t(du)) - diag(3)
+  tr_eps = V(eps[1,1] + eps[2,2] + eps[3,3])
+  sigma = 2*mu*eps + lam*diag(3) * tr_eps
+
+  dphi = V(deriv(phi,"x"),deriv(phi,"y"),deriv(phi,"z"))
+  dim(dphi) = c(length(phi),3)
+
+  v = E(dphi %*% sigma)
+
+?>
+
+CudaDeviceFunction vector_t getU() {
+  vector_t u = {ux(0,0,0),uy(0,0,0),uz(0,0,0)};
+  return u;
+}
+
+CudaDeviceFunction real_t getDens() {
+  return Density;
+}
+
+CudaDeviceFunction float2 Color() {
+  float2 ret;
+  vector_t u = getU();
+  ret.x = sqrt(u.x*u.x+u.y*u.y+u.z*u.z);
+  ret.y = 1;
+  return ret;
+}
+
+CudaDeviceFunction void Boundary() {
+  switch(NodeType & NODE_BOUNDARY) {
+    case NODE_Dirichlet:
+      <?R C(point_u, Displacement) ?>
+      break;
+  }
+}
+
+
+CudaDeviceFunction void InitU() {
+<?R C(point_u, Displacement) ?>
+  Boundary();
+}
+
+CudaDeviceFunction void CalcU() {
+<?R C(point_u, point_u + relax*rep(1,nrow(dsel)) %*% dbeta) ?>
+  Boundary();
+}
+
+CudaDeviceFunction void CalcD() {
+  real_t mu  = Density*YoungModulus/(2*(1+PoissonRatio));
+  real_t lam = Density*YoungModulus*PoissonRatio/((1+PoissonRatio)*(1-2*PoissonRatio));
+<?R C(dbeta, v) ?>
+}
