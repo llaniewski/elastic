@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<CLBConfig output="output/" permissive="true">
+	<Geometry nx="256" ny="32" nz="32">
+		<Dirichlet name="support">
+			<Box nx="1"/>
+		</Dirichlet>
+		<Dirichlet name="load">
+			<Box dx="-1"/>
+		</Dirichlet>
+		<None name="cuts" mask="ALL">
+			<Box dy="-1"/>
+			<Box dz="-1"/>
+		</None>
+	</Geometry>
+	<Model>
+		<Param name="Density" value="1"/>
+		<Param name="Density" value="0" zone="load"/>
+		<Param name="Density" value="0" zone="cuts"/>
+		<Param name="YoungModulus" value="1"/>
+		<Param name="PoissonRatio" value="0.2"/>
+		<Param name="Relaxation" value="-0.1"/>
+	</Model>
+	<VTK Iterations="100"/>
+	<VTK/>
+	<Param name="DisplacementZ" value="-4.0" zone="load"/>
+	<Andersen Directions="40">
+		<Solve Iterations="100"/>
+	</Andersen>
+</CLBConfig>

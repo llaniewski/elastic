@@ -36,6 +36,7 @@ AddSetting(name="DisplacementX", zonal=TRUE)
 AddSetting(name="DisplacementY", zonal=TRUE)
 AddSetting(name="DisplacementZ", zonal=TRUE)
 AddSetting(name="Relaxation")
+AddSetting(name="Nonlinear")
 
 #	Boundary things:
 AddNodeType(name="Dirichlet", group="BOUNDARY")

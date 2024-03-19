@@ -7,6 +7,7 @@
   mu = PV("mu")
   lam = PV("lam")
   relax = PV("Relaxation")
+  nl = PV("nl")
 
   Displacement = PV("Displacement",c("X","Y","Z"))
   point_u = PV("u",xyz)
@@ -27,7 +28,8 @@
   dim(du) = c(length(u),3)
 
   # eps = du + t(du)
-  eps = (diag(3) + du) %*% (diag(3) + t(du)) - diag(3)
+  # eps = (diag(3) + du) %*% (diag(3) + t(du)) - diag(3)
+  eps = du + t(du) + nl * du %*% t(du)
   tr_eps = V(eps[1,1] + eps[2,2] + eps[3,3])
   sigma = 2*mu*eps + lam*diag(3) * tr_eps
 
@@ -77,5 +79,6 @@ CudaDeviceFunction void CalcU() {
 CudaDeviceFunction void CalcD() {
   real_t mu  = Density*YoungModulus/(2*(1+PoissonRatio));
   real_t lam = Density*YoungModulus*PoissonRatio/((1+PoissonRatio)*(1-2*PoissonRatio));
+  real_t nl = Nonlinear;
 <?R C(dbeta, v) ?>
 }
